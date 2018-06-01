@@ -43,17 +43,17 @@ head(MDF)
  
 # шаг-6. рисуем один график (здесь: профиль №11) по кривой лесса с доверительными интервалами и квантилями
 Loess_profile11 <- ggplot(MDF, aes(x = nr_point, y = profile11)) +
-	geom_point(aes(x = nr_point, y = profile11), show.legend=TRUE) +
+	geom_point(aes(x = nr_point, y = profile11, colour = "Observation points", shape = "Observation points"), show.legend=TRUE) +
 	geom_smooth(aes(x = nr_point, y = profile11, colour = "Loess method"), method = loess, se = TRUE, span = .4, size=.3, linetype = "solid", show.legend=TRUE) +
 	geom_smooth(aes(x = nr_point, y = profile11, colour = "Glm method"), method = glm, se = FALSE, span = .4, size=.4, linetype = "dotted", show.legend=TRUE) +
 	geom_smooth(aes(x = nr_point, y = profile11, colour = "Lm method"), method = lm, se = TRUE, size=.3, linetype = "solid", show.legend=TRUE) +
 	geom_quantile(aes(x = nr_point, y = profile11, colour = "Quantiles"), linetype = "solid", show.legend=TRUE) +
 	xlab("Observations") + 
 	ylab("Depths, m") +
-	scale_color_manual(values = c("Loess method"="blue", "Glm method"="red", "Lm method" = "purple", "Quantiles" = "orange")) +
-#	scale_shape_manual(mydepths = "seagreen", loess = "red", quantiles = "orange", lm = "blue", glm = "purple") +
+	scale_color_manual(values = c("Observation points" = "seagreen", "Loess method" = "blue", "Glm method" = "red", "Lm method" = "purple", "Quantiles" = "orange")) + # задаем значения цветов элементов
+	scale_shape_manual(values = c("Observation points" = 1)) + # задаем значения формы точки (здесь: №1 - "прозрачный кружок")
 #	scale_size_manual(values = c(profile11 = 1)) +
-	labs(title="Mariana Trench, Profile Nr.111", 
+	labs(title="Mariana Trench, Profile Nr.11", 
 	subtitle = "Local Polynomial Regression, Confidence Interval and Quantiles QQ \n(LOESS method: locally weighted scatterplot smoothing for non-parametric regression)",
 	caption =  "Statistics Processing and Graphs: \nR Programming. Data Source: QGIS") +
 	theme(
@@ -83,7 +83,8 @@ Loess_profile11 <- ggplot(MDF, aes(x = nr_point, y = profile11)) +
 		axis.ticks.length=unit(.1,"cm"),
 		axis.line = element_line(size = .3, colour = "grey80"),
 		axis.title.y = element_text(margin = margin(t = 20, r = .3), family = "Times New Roman", face = 2, size = 8),
-		axis.title.x = element_text(family = "Times New Roman", face = 2, size = 8, margin = margin(t = .2)))
+		axis.title.x = element_text(family = "Times New Roman", face = 2, size = 8, margin = margin(t = .2))) +
+		guides(col = guide_legend(nrow = 4, ncol = 2, byrow = TRUE)) # подправляем дизайн легенды.
 Loess_profile11
 	
 ggsave("Loess_Profile11.pdf", device = cairo_pdf, fallback_resolution = 300, width = 210, height = 297, units = "mm")
