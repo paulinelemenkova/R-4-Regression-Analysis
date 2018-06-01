@@ -46,18 +46,18 @@ MarDF<- melt(MDF, id.vars=c('nr_point'), variable.name ='profiles')
 head(MarDF)
 
 # шаг-6. рисуем множественный фасетный график по кривой лесса с доверительными интервалами из 25 маленьких графиков
-Loess_MD <- ggplot(MarDF, aes(x = nr_point, y = value, shape = "variable", color = "variable", size = "variable")) + 
+Loess_MD <- ggplot(MarDF, aes(x = nr_point, y = value, shape = "Observation points", color = "Observation points", size = "Observation points")) + 
 	facet_wrap(~ profiles) +
 	geom_point(aes(x = nr_point, y = value), show.legend = FALSE) +
-	geom_smooth(aes(x = nr_point, y = value), method = loess, se = TRUE, span = .4, color = "red", size=.3, linetype = "solid", show.legend =  FALSE) +
-	geom_smooth(aes(x = nr_point, y = value), method = glm, se = FALSE, span = .4, color = "orange", size=.4, linetype = "dotted", show.legend = FALSE) +
-	geom_smooth(aes(x = nr_point, y = value), method = lm, se = TRUE, color = "blue", size=.3, linetype = "solid", show.legend = FALSE) +
-	geom_quantile(aes(x = nr_point, y = value), color = "purple", linetype = "solid", show.legend = FALSE) +
+	geom_smooth(aes(x = nr_point, y = value, colour = "Loess method"), method = loess, se = TRUE, span = .4, size=.2, linetype = "solid", show.legend =  TRUE) +
+	geom_smooth(aes(x = nr_point, y = value, colour = "Glm method"), method = glm, se = TRUE, span = .4, size=.2, linetype = "dotted", show.legend = TRUE) +
+	geom_smooth(aes(x = nr_point, y = value, colour = "Lm method"), method = lm, se = TRUE, size=.2, linetype = "solid", show.legend = TRUE) +
+	geom_quantile(aes(x = nr_point, y = value, colour = "Quantiles"), linetype = "solid", show.legend = TRUE) +
 	xlab("Observations") + 
 	ylab("Depths, m") +
-	scale_shape_manual(values = c(variable = 1)) +
-	scale_color_manual(name = "Legend:", values = c(variable = "seagreen")) +
-	scale_size_manual(values = c(0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1)) +
+	scale_color_manual(name = "Legend:", values = c("Observation points" = "seagreen", "Loess method" = "red", "Glm method" = "orange", "Lm method" = "blue", "Quantiles" = "purple")) + # задаем значения цветов элементов
+	scale_shape_manual(values = c("Observation points" = 1)) +
+	scale_size_manual(values = c("Observation points" = 0.1)) +
 	labs(title="Mariana Trench, Profiles Nr.1-25", 
 	subtitle = "Local Polynomial Regression, Confidence Interval and Quantiles QQ \n(LOESS method: locally weighted scatterplot smoothing for non-parametric regression)",
 	caption =  "Statistics Processing and Graphs: \nR Programming. Data Source: QGIS") +
@@ -72,7 +72,7 @@ Loess_MD <- ggplot(MarDF, aes(x = nr_point, y = value, shape = "variable", color
 		legend.box.just = "right",
 		legend.direction = "horizontal",
 		legend.box = "horizontal",
-		legend.box.background = element_rect(colour = "honeydew4",size=0.2),
+		legend.box.background = element_rect(colour = "white",size=0.2),
 		legend.background = element_rect(fill = "white"),
 		legend.key.width = unit(.1,"cm"),
 		legend.key.height = unit(.1,"cm"),
