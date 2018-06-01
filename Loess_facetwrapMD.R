@@ -43,25 +43,29 @@ head(MDF)
 
 # шаг-5. соединяем все профили в одну группу
 MarDF<- melt(MDF, id.vars=c('nr_point'), variable.name ='profiles')
-color = "variable", 
+head(MarDF)
 
-# шаг-6. рисуем множественный фасетный график по кривой лесса из 25 маленьких 
+# шаг-6. рисуем множественный фасетный график по кривой лесса с доверительными интервалами из 25 маленьких графиков
 Loess_MD <- ggplot(MarDF, aes(x = nr_point, y = value, shape = "variable", color = "variable", size = "variable")) + 
 	facet_wrap(~ profiles) +
-	geom_point(aes(x = nr_point, y = value)) +
-	geom_smooth(aes(x = nr_point, y = value), method = loess, se = TRUE, span = .4, color = "red", size=.3, linetype = "solid") +
-	geom_smooth(aes(x = nr_point, y = value), method = glm, se = TRUE, span = .4, color = "orange", size=.4, linetype = "dotted") +
-	geom_quantile(aes(x = nr_point, y = value), color = "purple", linetype = "solid")+
-	geom_smooth(aes(x = nr_point, y = value), method = lm, se = TRUE, color = "blue", size=.3, linetype = "solid") +
+	geom_point(aes(x = nr_point, y = value), show.legend = FALSE) +
+	geom_smooth(aes(x = nr_point, y = value), method = loess, se = TRUE, span = .4, color = "red", size=.3, linetype = "solid", show.legend =  FALSE) +
+	geom_smooth(aes(x = nr_point, y = value), method = glm, se = FALSE, span = .4, color = "orange", size=.4, linetype = "dotted", show.legend = FALSE) +
+	geom_smooth(aes(x = nr_point, y = value), method = lm, se = TRUE, color = "blue", size=.3, linetype = "solid", show.legend = FALSE) +
+	geom_quantile(aes(x = nr_point, y = value), color = "purple", linetype = "solid", show.legend = FALSE) +
 	xlab("Observations") + 
 	ylab("Depths, m") +
 	scale_shape_manual(values = c(variable = 1)) +
 	scale_color_manual(name = "Legend:", values = c(variable = "seagreen")) +
 	scale_size_manual(values = c(0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1)) +
-	labs(title="Mariana Trench, Profiles Nr.1-25, \nLocal Polynomial Regression and QQ \n(LOESS method: locally weighted scatterplot smoothing for non-parametric regression) \nStatistics and Graphs: R Programming") +
+	labs(title="Mariana Trench, Profiles Nr.1-25", 
+	subtitle = "Local Polynomial Regression, Confidence Interval and Quantiles QQ \n(LOESS method: locally weighted scatterplot smoothing for non-parametric regression)",
+	caption =  "Statistics Processing and Graphs: \nR Programming. Data Source: QGIS") +
 	theme(
 		plot.margin = margin(5, 10, 20, 5),
-		plot.title = element_text(family = "Times New Roman", face = 2, size = 10),
+		plot.title = element_text(family = "Times New Roman", face = 2, size = 12),
+		plot.subtitle = element_text(family = "Times New Roman", face = 1, size = 10),
+		plot.caption = element_text(family = "Times New Roman", face = 2, size = 8),
 		panel.background=ggplot2::element_rect(fill = "white"),
 		legend.justification = "bottom", 
 		legend.position = "bottom",
@@ -84,8 +88,8 @@ Loess_MD <- ggplot(MarDF, aes(x = nr_point, y = value, shape = "variable", color
 		axis.ticks.length=unit(.1,"cm"),
 		axis.line = element_line(size = .3, colour = "grey80"),
 		axis.title.y = element_text(margin = margin(t = 20, r = .3), family = "Times New Roman", face = 2, size = 8),
-		axis.title.x = element_text(family = "Times New Roman", face = 2, size = 8, margin = margin(t = .2))) +
-	guides(col = guide_legend(nrow = 2, ncol = 3, byrow = TRUE)) # вытягиваем легенду вниз по вертикали.
+		axis.title.x = element_text(family = "Times New Roman", face = 2, size = 8, margin = margin(t = .2)))
+#	guides(col = guide_legend(nrow = 2, ncol = 1, byrow = TRUE)) # подправляем дизайн легенды.
 Loess_MD 
 	
 ggsave("Loess_facetwrapMD.pdf", device = cairo_pdf, fallback_resolution = 300, width = 210, height = 297, units = "mm")
